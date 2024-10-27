@@ -1,0 +1,314 @@
+@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap");
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #1a1a2e;
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+}
+
+.home-header {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-image: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.comic-title {
+  font-family: "Bangers", cursive;
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px 1px 0 #000, 1px 1px 0 #000;
+  letter-spacing: 2px;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+.home-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.novel-category {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.category-title {
+  font-family: "Bangers", cursive;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.novel-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.novel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.novel-card {
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  height: 350px;
+}
+
+.empty-card {
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-card .novel-info {
+  position: static;
+  background: none;
+  color: #333;
+}
+
+.novel-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px 15px;
+}
+
+.novel-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+.novel-title {
+  font-family: "Bangers", cursive;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #000;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.novel-author {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.novel-chapters {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+}
+
+.cta {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  text-decoration: none;
+  background-color: #ff6b6b;
+  color: #fff;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-family: "Bangers", cursive;
+  letter-spacing: 1px;
+}
+
+.cta-button:hover {
+  background-color: #ff8e8e;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.home-footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #16213e;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .comic-title {
+    font-size: 3.5rem;
+  }
+
+  .tagline {
+    font-size: 1.2rem;
+  }
+
+  .category-title {
+    font-size: 2rem;
+  }
+
+  .novel-card {
+    width: 150px;
+  }
+
+  .novel-image {
+    height: 210px;
+  }
+
+  .cta-button {
+    font-size: 1.2rem;
+  }
+
+  .novel-title {
+    font-size: 1.8rem;
+  }
+
+  .novel-info {
+    padding: 15px;
+  }
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error-message {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.error-message h2 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.error-message button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error-message button:hover {
+  background: #0056b3;
+}
+
+.read-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  background-color: #ff6b6b;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 25px;
+  font-family: "Bangers", cursive;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.read-button:hover {
+  background-color: #ff8e8e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-color: #ffd700;
+}
+
+.read-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Adjust read button for mobile */
+@media (max-width: 768px) {
+  .read-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Make the selectors more specific for home page */
+.novel-grid .novel-card .novel-title {
+  font-family: "Bangers", cursive;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #000;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.novel-grid .novel-card .novel-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px 15px;
+}
+
+.novel-grid .novel-card .novel-author {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.novel-grid .novel-card .novel-chapters {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .novel-grid .novel-card .novel-title {
+    font-size: 1.8rem;
+  }
+
+  .novel-grid .novel-card .novel-info {
+    padding: 15px;
+  }
+}
