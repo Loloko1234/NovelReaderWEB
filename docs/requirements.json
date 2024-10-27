@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "id": 1,
+      "name": "Biblioteka powieści",
+      "description": "Użytkownik może przeglądać listę dostępnych powieści z możliwością filtrowania i sortowania"
+    },
+    {
+      "id": 2,
+      "name": "Czytnik powieści",
+      "description": "Użytkownik może czytać wybraną powieść z opcjami dostosowania wyglądu tekstu"
+    },
+    {
+      "id": 3,
+      "name": "Zakładki i notatki",
+      "description": "Użytkownik może dodawać zakładki i notatki do czytanych powieści"
+    },
+    {
+      "id": 4,
+      "name": "Synchronizacja postępu",
+      "description": "Postęp czytania jest synchronizowany między urządzeniami"
+    },
+    {
+      "id": 5,
+      "name": "Wyszukiwanie powieści",
+      "description": "Użytkownik może wyszukiwać powieści po tytule, autorze lub gatunku"
+    },
+    {
+      "id": 6,
+      "name": "System logowania",
+      "description": "Użytkownik może się zarejestrować i zalogować, aby uzyskać dostęp do spersonalizowanych funkcji"
+    }
+  ]
+}

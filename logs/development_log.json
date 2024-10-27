@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "id": 1,
+      "date": "2024-10-23",
+      "type": "feature",
+      "description": "Rozpoczęto implementację biblioteki powieści",
+      "status": "in progress"
+    },
+    {
+      "id": 2,
+      "date": "2024-10-23",
+      "type": "setup",
+      "description": "Skonfigurowano projekt Next.js z TypeScript",
+      "status": "completed"
+    }
+  ]
+}
