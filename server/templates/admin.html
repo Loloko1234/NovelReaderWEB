@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Panel</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+      .scraper-form {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+      }
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+        color: white;
+      }
+      #results {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 1rem;
+      }
+      .error {
+        color: #dc3545;
+        margin-top: 0.5rem;
+      }
+      .loading {
+        text-align: center;
+        padding: 1rem;
+        color: #666;
+      }
+      .edit-form {
+        margin-top: 2rem;
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      #currentCover {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        background: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Admin Panel</h1>
+        <a href="/logout" class="btn btn-danger">Logout</a>
+      </div>
+
+      <div class="scraper-form">
+        <div class="form-group">
+          <label for="novelUrl">Novel URL:</label>
+          <input
+            type="url"
+            id="novelUrl"
+            placeholder="https://novelbin.com/... or https://novelbin.lanovels.net/..."
+          />
+          <small style="color: #666; display: block; margin-top: 0.25rem">
+            URL must be from novelbin.com or novelbin.lanovels.net
+          </small>
+        </div>
+        <button id="runScraper" class="btn btn-primary">Run Scraper</button>
+      </div>
+
+      <div id="results"></div>
+
+      <!-- Add this after the scraper form div -->
+      <div class="edit-form scraper-form">
+        <h2>Edit Novel Cover</h2>
+        <div class="form-group">
+          <label for="novelSelect">Select Novel:</label>
+          <select id="novelSelect" class="form-control">
+            <option value="">Select a novel...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="currentCover">Current Cover:</label>
+          <img
+            id="currentCover"
+            src=""
+            alt="No cover"
+            style="max-width: 200px; display: block; margin: 10px 0"
+          />
+        </div>
+        <div class="form-group">
+          <label for="newCoverUrl">New Cover URL:</label>
+          <input
+            type="url"
+            id="newCoverUrl"
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+        <button id="updateCover" class="btn btn-primary">Update Cover</button>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("runScraper")
+        .addEventListener("click", async () => {
+          const resultsDiv = document.getElementById("results");
+          const urlInput = document.getElementById("novelUrl");
+          const url = urlInput.value.trim();
+
+          if (!url) {
+            resultsDiv.innerHTML =
+              '<div class="error">Please enter a URL</div>';
+            return;
+          }
+
+          const allowedDomains = [
+            "https://novelbin.com/",
+            "https://novelbin.lanovels.net/",
+          ];
+
+          if (!allowedDomains.some((domain) => url.startsWith(domain))) {
+            resultsDiv.innerHTML =
+              '<div class="error">Only novelbin.com and novelbin.lanovels.net URLs are allowed</div>';
+            return;
+          }
+
+          resultsDiv.innerHTML = '<div class="loading">Loading...</div>';
+
+          try {
+            const response = await fetch("/api/run-scraper", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ url }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              resultsDiv.innerHTML = `
+              <h3>Results:</h3>
+              <div style="color: green; margin-bottom: 1rem;">
+                ✓ ${data.message}
+              </div>
+              <p><strong>Novel ID:</strong> ${data.id}</p>
+              <p><strong>Title:</strong> ${data.title}</p>
+              <p><strong>Author:</strong> ${data.author}</p>
+              <p><strong>Chapters:</strong> ${data.chapters.length}</p>
+              <details>
+                <summary>Show full data</summary>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+              </details>
+            `;
+            } else {
+              resultsDiv.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+            }
+          } catch (error) {
+            resultsDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+          }
+        });
+
+      // Load novels into select dropdown
+      async function loadNovels() {
+        try {
+          const response = await fetch("/api/novels");
+          const novels = await response.json();
+
+          const select = document.getElementById("novelSelect");
+          novels.forEach((novel) => {
+            const option = document.createElement("option");
+            option.value = novel.id;
+            option.textContent = novel.title;
+            option.dataset.cover = novel.cover_image_url;
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error loading novels:", error);
+        }
+      }
+
+      // Update current cover preview when novel is selected
+      document.getElementById("novelSelect").addEventListener("change", (e) => {
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        const coverImg = document.getElementById("currentCover");
+        const coverUrl = selectedOption.dataset.cover;
+
+        coverImg.src = coverUrl || "";
+        coverImg.style.display = coverUrl ? "block" : "none";
+
+        // Pre-fill new cover URL input with current URL
+        document.getElementById("newCoverUrl").value = coverUrl || "";
+      });
+
+      // Handle cover update
+      document
+        .getElementById("updateCover")
+        .addEventListener("click", async () => {
+          const novelId = document.getElementById("novelSelect").value;
+          const newCoverUrl = document
+            .getElementById("newCoverUrl")
+            .value.trim();
+
+          if (!novelId) {
+            alert("Please select a novel");
+            return;
+          }
+
+          if (!newCoverUrl) {
+            alert("Please enter a new cover URL");
+            return;
+          }
+
+          try {
+            const response = await fetch("/api/update-cover", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                novel_id: novelId,
+                cover_url: newCoverUrl,
+              }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert(data.message);
+              // Update the current cover preview and dataset
+              const currentCover = document.getElementById("currentCover");
+              currentCover.src = newCoverUrl;
+              currentCover.style.display = "block";
+
+              const selectedOption =
+                document.getElementById("novelSelect").options[
+                  document.getElementById("novelSelect").selectedIndex
+                ];
+              selectedOption.dataset.cover = newCoverUrl;
+            } else {
+              alert("Error: " + data.error);
+            }
+          } catch (error) {
+            alert("Error updating cover: " + error.message);
+          }
+        });
+
+      // Load novels when page loads
+      document.addEventListener("DOMContentLoaded", loadNovels);
+    </script>
+  </body>
+</html>
