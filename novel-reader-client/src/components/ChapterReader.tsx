@@ -9,6 +9,9 @@ const ChapterReader: React.FC = () => {
   const [content, setContent] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalChapters, setTotalChapters] = useState<number>(0);
+
+  const currentChapter = Number(chapterNumber);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -41,7 +44,6 @@ const ChapterReader: React.FC = () => {
         }
       } catch (error) {
         if (error instanceof CanceledError) {
-          // Ignore canceled requests
           return;
         }
 
@@ -67,6 +69,27 @@ const ChapterReader: React.FC = () => {
       clearTimeout(timeoutId);
     };
   }, [novelId, chapterNumber]);
+
+  useEffect(() => {
+    const fetchNovelInfo = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/novels/${novelId}`
+        );
+        setTotalChapters(response.data.last_chapter_number);
+      } catch (error) {
+        console.error("Error fetching novel info:", error);
+      }
+    };
+
+    fetchNovelInfo();
+  }, [novelId]);
+
+  const handleNavigateChapter = (direction: "prev" | "next") => {
+    const nextChapter =
+      direction === "next" ? currentChapter + 1 : currentChapter - 1;
+    navigate(`/novel/${novelId}/chapter/${nextChapter}`);
+  };
 
   if (isLoading) {
     return (
@@ -97,12 +120,44 @@ const ChapterReader: React.FC = () => {
       <div className="chapter-header">
         <h1>Chapter {chapterNumber}</h1>
       </div>
+      <div className="chapter-navigation">
+        <button
+          onClick={() => handleNavigateChapter("prev")}
+          disabled={currentChapter <= 1}
+          className="nav-button prev"
+        >
+          Previous Chapter
+        </button>
+        <button
+          onClick={() => handleNavigateChapter("next")}
+          disabled={currentChapter >= totalChapters}
+          className="nav-button next"
+        >
+          Next Chapter
+        </button>
+      </div>
       <div className="chapter-content">
         {content.map((paragraph, index) => (
           <p key={index} className="chapter-paragraph">
             {paragraph}
           </p>
         ))}
+      </div>
+      <div className="chapter-navigation bottom">
+        <button
+          onClick={() => handleNavigateChapter("prev")}
+          disabled={currentChapter <= 1}
+          className="nav-button prev"
+        >
+          Previous Chapter
+        </button>
+        <button
+          onClick={() => handleNavigateChapter("next")}
+          disabled={currentChapter >= totalChapters}
+          className="nav-button next"
+        >
+          Next Chapter
+        </button>
       </div>
     </div>
   );
