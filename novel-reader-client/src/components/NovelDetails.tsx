@@ -66,6 +66,24 @@ const NovelDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <div className="chapters-section">
+        <h2>Chapters</h2>
+        <div className="chapters-list">
+          {novel.chapters.map((chapter) => (
+            <Link
+              key={chapter.id}
+              to={`/novel/${novel.id}/chapter/${chapter.chapter_number}`}
+              className="chapter-item"
+            >
+              <span className="chapter-number">
+                Chapter {chapter.chapter_number}
+              </span>
+              <span className="chapter-title">{chapter.title}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

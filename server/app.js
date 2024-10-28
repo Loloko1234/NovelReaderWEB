@@ -42,12 +42,29 @@ app.get("/api/novels/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log(`Fetching novel with id ${id}`);
-    const result = await pool.query("SELECT * FROM novels WHERE id = $1", [id]);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).json({ message: "Novel not found" });
+
+    // Get novel details
+    const novelResult = await pool.query("SELECT * FROM novels WHERE id = $1", [
+      id,
+    ]);
+
+    if (novelResult.rows.length === 0) {
+      return res.status(404).json({ message: "Novel not found" });
     }
+
+    // Get chapters with URLs
+    const chaptersResult = await pool.query(
+      "SELECT id, chapter_number, title, url FROM chapters WHERE novel_id = $1 ORDER BY chapter_number ASC",
+      [id]
+    );
+
+    // Combine novel data with chapters
+    const novel = {
+      ...novelResult.rows[0],
+      chapters: chaptersResult.rows,
+    };
+
+    res.json(novel);
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ message: "Server error", error: err.message });

@@ -34,7 +34,7 @@ def get_db_connection():
 def save_novel_data(novel_data, base_url):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            # Dodaj powieść do tabeli novels
+            # Novel insertion remains the same
             cur.execute("""
                 INSERT INTO novels (
                     title, 
@@ -57,25 +57,23 @@ def save_novel_data(novel_data, base_url):
             
             novel_id = cur.fetchone()[0]
             
-            # Dodaj rozdziały do tabeli chapters
+            # Modified chapter insertion to include URL
             for index, chapter in enumerate(novel_data['chapters'], 1):
                 try:
-                    # Próbuj wyciągnąć numer z tytułu
                     title_parts = chapter['title'].split()
                     if 'Chapter' in chapter['title']:
                         chapter_number = int(title_parts[-1])
                     else:
-                        # Jeśli nie ma "Chapter" w tytule, użyj kolejności jako numeru
                         chapter_number = index
                 except (ValueError, IndexError):
-                    # Jeśli nie można wyciągnąć numeru, użyj kolejności jako numeru
                     chapter_number = index
                 
                 cur.execute("""
-                    INSERT INTO chapters (novel_id, chapter_number, title)
-                    VALUES (%s, %s, %s)
-                    ON CONFLICT (novel_id, chapter_number) DO NOTHING
-                """, (novel_id, chapter_number, chapter['title']))
+                    INSERT INTO chapters (novel_id, chapter_number, title, url)
+                    VALUES (%s, %s, %s, %s)
+                    ON CONFLICT (novel_id, chapter_number) 
+                    DO UPDATE SET url = EXCLUDED.url
+                """, (novel_id, chapter_number, chapter['title'], chapter['url']))
             
             # Aktualizuj last_chapter_number w tabeli novels
             cur.execute("""
