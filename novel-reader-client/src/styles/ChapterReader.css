@@ -1,0 +1,30 @@
+/* novel-reader-client/src/styles/ChapterReader.css */
+.chapter-reader {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  line-height: 1.6;
+  font-size: 18px;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.chapter-content {
+  margin-top: 2rem;
+}
+
+.paragraph {
+  margin-bottom: 1.5em;
+  color: #333;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error {
+  color: #ff4444;
+}

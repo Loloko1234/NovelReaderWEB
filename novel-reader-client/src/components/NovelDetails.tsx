@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { fetchNovel, Novel } from "../api/novel.ts";
 import "../styles/NovelDetails.css";
+import axios from "axios";
 
 const NovelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [novel, setNovel] = useState<Novel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadNovel = async () => {
@@ -25,6 +27,28 @@ const NovelDetails: React.FC = () => {
 
     loadNovel();
   }, [id]);
+
+  const handleStartReading = async () => {
+    try {
+      if (!novel?.id) return;
+
+      // Get the first chapter content
+      const response = await axios.get(
+        `http://localhost:5000/api/novels/${novel.id}/chapters/1/content`
+      );
+
+      if (response.data.success) {
+        // Navigate to the chapter reader with the content
+        navigate(`/novel/${novel.id}/chapter/1`);
+      } else {
+        console.error("Failed to fetch chapter content:", response.data.error);
+        alert("Failed to load chapter content. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error starting reading:", error);
+      alert("An error occurred while loading the chapter.");
+    }
+  };
 
   if (isLoading) {
     return <div className="loading-container">Loading...</div>;
@@ -54,12 +78,12 @@ const NovelDetails: React.FC = () => {
           </div>
           <p className="novel-description">{novel.description}</p>
           <div className="action-buttons">
-            <Link
-              to={`/novel/${novel.id}/chapter/1`}
+            <button
+              onClick={handleStartReading}
               className="start-reading-button"
             >
               Start Reading
-            </Link>
+            </button>
             <Link to="/" className="back-button">
               Back to Home
             </Link>

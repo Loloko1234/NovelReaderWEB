@@ -12,6 +12,7 @@ import Home from "./components/Home.tsx";
 import Layout from "./components/layout.tsx";
 import NovelChapter from "./components/NovelChapter.tsx";
 import NovelDetails from "./components/NovelDetails.tsx";
+import ChapterReader from "./components/ChapterReader.tsx";
 
 const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({
   element,
@@ -37,6 +38,10 @@ const App: React.FC = () => {
           />
           <Route path="/novelchapter" element={<NovelChapter />} />
           <Route path="/novel/:id" element={<NovelDetails />} />
+          <Route
+            path="/novel/:novelId/chapter/:chapterNumber"
+            element={<ChapterReader />}
+          />
         </Routes>
       </Layout>
     </Router>

@@ -73,6 +73,39 @@ app.get("/api/novels/:id", async (req, res) => {
 
 app.use("/api/novel", novelRoutes);
 
+app.get(
+  "/api/novels/:novelId/chapters/:chapterNumber/content",
+  async (req, res) => {
+    try {
+      const { novelId, chapterNumber } = req.params;
+
+      // Get chapter URL from database
+      const chapterResult = await pool.query(
+        "SELECT url FROM chapters WHERE novel_id = $1 AND chapter_number = $2",
+        [novelId, chapterNumber]
+      );
+
+      if (chapterResult.rows.length === 0) {
+        return res.status(404).json({ error: "Chapter not found" });
+      }
+
+      const { url } = chapterResult.rows[0];
+      const { scrapeChapterContent } = require("./src/services/chapterScraper");
+
+      const content = await scrapeChapterContent(url);
+
+      if (!content.success) {
+        return res.status(500).json({ error: content.error });
+      }
+
+      res.json(content);
+    } catch (error) {
+      console.error("Error fetching chapter:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
