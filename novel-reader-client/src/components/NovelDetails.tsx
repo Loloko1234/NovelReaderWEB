@@ -9,17 +9,23 @@ const NovelDetails: React.FC = () => {
   const [novel, setNovel] = useState<Novel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLoadingChapter, setIsLoadingChapter] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadNovel = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         const fetchedNovel = await fetchNovel(Number(id));
         setNovel(fetchedNovel);
       } catch (err: any) {
         console.error("Error fetching novel:", err);
-        setError(err.message || "Failed to load novel details");
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Failed to load novel details"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -31,22 +37,30 @@ const NovelDetails: React.FC = () => {
   const handleStartReading = async () => {
     try {
       if (!novel?.id) return;
+      setIsLoadingChapter(true);
+      setError(null);
 
-      // Get the first chapter content
       const response = await axios.get(
-        `http://localhost:5000/api/novels/${novel.id}/chapters/1/content`
+        `http://localhost:5000/api/novels/${novel.id}/chapters/1/content`,
+        { timeout: 10000 }
       );
 
       if (response.data.success) {
-        // Navigate to the chapter reader with the content
         navigate(`/novel/${novel.id}/chapter/1`);
       } else {
-        console.error("Failed to fetch chapter content:", response.data.error);
-        alert("Failed to load chapter content. Please try again.");
+        throw new Error(
+          response.data.error || "Failed to load chapter content"
+        );
       }
-    } catch (error) {
-      console.error("Error starting reading:", error);
-      alert("An error occurred while loading the chapter.");
+    } catch (err: any) {
+      console.error("Error starting reading:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to load chapter content"
+      );
+    } finally {
+      setIsLoadingChapter(false);
     }
   };
 

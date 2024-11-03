@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios, { AxiosError, CanceledError } from "axios";
 import "../styles/NovelChapter.css";
+import LoadingSpinner from "./LoadingSpinner.tsx";
 
 const ChapterReader: React.FC = () => {
   const { novelId, chapterNumber } = useParams();
@@ -94,9 +95,13 @@ const ChapterReader: React.FC = () => {
   if (isLoading) {
     return (
       <div className="chapter-container">
-        <div className="chapter-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading chapter... This may take a few moments.</p>
+        <LoadingSpinner
+          size="large"
+          message="Loading chapter content... Please wait"
+        />
+        <div className="loading-tips">
+          <p>This may take a few moments to load the chapter.</p>
+          <p>If loading persists, try refreshing the page.</p>
         </div>
       </div>
     );
@@ -108,8 +113,17 @@ const ChapterReader: React.FC = () => {
         <div className="chapter-error">
           <h2>Error Loading Chapter</h2>
           <p>{error}</p>
-          <button onClick={() => window.location.reload()}>Try Again</button>
-          <button onClick={() => navigate(-1)}>Go Back</button>
+          <div className="error-actions">
+            <button
+              onClick={() => window.location.reload()}
+              className="retry-button"
+            >
+              Try Again
+            </button>
+            <button onClick={() => navigate(-1)} className="back-button">
+              Go Back
+            </button>
+          </div>
         </div>
       </div>
     );
