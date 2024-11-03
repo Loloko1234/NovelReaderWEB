@@ -187,3 +187,12 @@
     gap: 0.5rem;
   }
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  background-color: #1a1a2e;
+  padding: 2rem;
+}

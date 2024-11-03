@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { fetchNovel, Novel } from "../api/novel.ts";
 import "../styles/NovelDetails.css";
 import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner.tsx";
 
 const NovelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -65,7 +66,14 @@ const NovelDetails: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="loading-container">Loading...</div>;
+    return (
+      <div className="loading-container">
+        <LoadingSpinner
+          size="large"
+          message="Loading novel details... Please wait"
+        />
+      </div>
+    );
   }
 
   if (error) {

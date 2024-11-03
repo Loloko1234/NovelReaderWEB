@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { fetchNovels, Novel } from "../api/novel.ts";
 import "../styles/home.css";
+import LoadingSpinner from "./LoadingSpinner.tsx";
 
 const Home: React.FC = () => {
   const [novels, setNovels] = useState<Novel[]>([]);
@@ -30,12 +31,13 @@ const Home: React.FC = () => {
     loadNovels();
   }, []);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner">Ładowanie...</div>
+        <LoadingSpinner size="large" message="Loading novels... Please wait" />
       </div>
     );
+  }
 
   if (error)
     return (
