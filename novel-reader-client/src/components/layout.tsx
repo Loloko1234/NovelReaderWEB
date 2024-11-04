@@ -17,8 +17,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
-    navigate("/signin");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   return (
@@ -49,7 +50,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </Link>
               </li>
               <div className="auth-buttons">
-                {localStorage.getItem("isAuthenticated") ? (
+                {localStorage.getItem("token") ? (
                   <button
                     onClick={handleLogout}
                     className="nav-button login-button"
@@ -57,14 +58,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     Logout
                   </button>
                 ) : (
-                  <>
-                    <Link to="/signin" className="nav-button login-button">
-                      Login
-                    </Link>
-                    <Link to="/signup" className="nav-button signup-button">
-                      Sign Up
-                    </Link>
-                  </>
+                  <Link to="/login" className="nav-button login-button">
+                    Login
+                  </Link>
                 )}
               </div>
             </ul>

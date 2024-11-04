@@ -7,18 +7,19 @@ import {
 } from "react-router-dom";
 import "./styles/app.css";
 import NovelLibrary from "./components/NovelLibrary.tsx";
-import SignIn from "./api/auth/signin.tsx";
+import Login from "./components/Login.tsx";
 import Home from "./components/Home.tsx";
 import Layout from "./components/layout.tsx";
 import NovelChapter from "./components/NovelChapter.tsx";
 import NovelDetails from "./components/NovelDetails.tsx";
 import ChapterReader from "./components/ChapterReader.tsx";
+import Register from "./components/Register.tsx";
 
 const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({
   element,
 }) => {
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  return isAuthenticated ? element : <Navigate to="/signin" />;
+  const isAuthenticated = localStorage.getItem("token") !== null;
+  return isAuthenticated ? element : <Navigate to="/login" />;
 };
 
 const App: React.FC = () => {
@@ -27,7 +28,7 @@ const App: React.FC = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/library"
             element={<PrivateRoute element={<NovelLibrary />} />}
@@ -42,6 +43,7 @@ const App: React.FC = () => {
             path="/novel/:novelId/chapter/:chapterNumber"
             element={<ChapterReader />}
           />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Layout>
     </Router>

@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const novelRoutes = require("./src/routes/novelRoutes.js");
+const authRoutes = require("./src/routes/authRoutes.js");
 const { pool } = require("./db");
 
 const app = express();
@@ -18,7 +19,7 @@ app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
-
+app.use("/api/auth", authRoutes);
 // Endpoint do testowania połączenia
 app.get("/api/test", (req, res) => {
   res.json({ message: "Server is running" });
@@ -72,6 +73,7 @@ app.get("/api/novels/:id", async (req, res) => {
 });
 
 app.use("/api/novel", novelRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get(
   "/api/novels/:novelId/chapters/:chapterNumber/content",

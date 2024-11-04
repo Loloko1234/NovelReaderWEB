@@ -1,1 +1,7 @@
-pierdolony login system 
+Add proper password hashing for new users
+Implement registration
+Add JWT token validation middleware
+Improve error handling and validation
+Add password reset functionality
+Implement remember me functionality
+Add OAuth options
