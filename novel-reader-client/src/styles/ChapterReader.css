@@ -22,6 +22,8 @@
   max-width: 700px;
   margin: 0 auto;
   padding: 0 1rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
 }
 
 .chapter-paragraph {
@@ -36,7 +38,7 @@
   align-items: center;
   padding: 1rem;
   max-width: 700px;
-  margin: 2rem auto;
+  margin: 0 auto;
   gap: 1rem;
 }
 
@@ -279,7 +281,7 @@
 
 /* Add padding to content to account for fixed elements */
 .chapter-content {
-  padding-top: 5rem;
+  padding-top: 0.3rem;
 }
 
 /* Responsive adjustments */
@@ -419,4 +421,23 @@
     bottom: 8rem;
     right: 1rem;
   }
+}
+
+/* Novel and Chapter Title */
+.novel-title {
+  font-size: 1.5rem;
+  color: #6366f1;
+  margin-bottom: 0.5rem;
+}
+
+.chapter-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.title-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  text-align: left;
 }

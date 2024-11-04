@@ -32,6 +32,9 @@ async function scrapeChapterContent(url) {
     // Load the HTML content
     const $ = cheerio.load(response.data);
 
+    // Extract chapter title
+    const chapterTitle = $(".chr-title").text().trim();
+
     // Extract paragraphs
     const paragraphs = $("p")
       .map((_, element) => {
@@ -61,6 +64,7 @@ async function scrapeChapterContent(url) {
     const result = {
       success: true,
       content: paragraphs,
+      chapterTitle: chapterTitle || `Chapter ${chapterNumber}`, // Fallback title
       url,
     };
 

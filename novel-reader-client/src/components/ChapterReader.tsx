@@ -17,6 +17,7 @@ const ChapterReader: React.FC = () => {
   const [readingMode, setReadingMode] = useState("dark"); // dark, sepia, high-contrast
   const [progress, setProgress] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [chapterTitle, setChapterTitle] = useState<string>("");
 
   const currentChapter = Number(chapterNumber);
 
@@ -49,6 +50,7 @@ const ChapterReader: React.FC = () => {
 
         if (response.data.success) {
           setContent(response.data.content);
+          setChapterTitle(response.data.chapterTitle);
         } else {
           setError("Failed to load chapter content");
         }
@@ -184,6 +186,9 @@ const ChapterReader: React.FC = () => {
 
       {/* Top Navigation */}
       <NavigationButtons />
+      <div className="title-container">
+        <h1 className="chapter-title">{chapterTitle}</h1>
+      </div>
 
       {/* Settings Button */}
       <button
