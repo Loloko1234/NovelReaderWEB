@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/Login.css";
 
@@ -12,8 +12,6 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log("Attempting login with:", { username, password });
-
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         {
@@ -22,18 +20,11 @@ const Login: React.FC = () => {
         }
       );
 
-      console.log("Login response:", response.data);
-
       const { token, user } = response.data;
-
-      // Store token and user data
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-
-      // Redirect to home page
       navigate("/");
     } catch (err: any) {
-      console.error("Login error:", err);
       setError(err.response?.data?.error || "Login failed");
     }
   };
@@ -41,9 +32,9 @@ const Login: React.FC = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Login</h2>
+        <h1 className="login-title">Login</h1>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <input
               type="text"
@@ -51,6 +42,7 @@ const Login: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="login-input"
             />
           </div>
           <div className="form-group">
@@ -60,12 +52,15 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="login-input"
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" className="login-button">
+            Login
+          </button>
         </form>
         <div className="register-link">
-          Don't have an account? <a href="/register">Register here</a>
+          Don't have an account? <Link to="/register">Register here</Link>
         </div>
       </div>
     </div>

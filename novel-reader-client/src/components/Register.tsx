@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/Register.css";
 
@@ -42,9 +42,9 @@ const Register: React.FC = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        <h2>Register</h2>
+        <h1 className="register-title">Create Account</h1>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
             <input
               type="text"
@@ -52,6 +52,7 @@ const Register: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="register-input"
             />
           </div>
           <div className="form-group">
@@ -61,6 +62,7 @@ const Register: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="register-input"
             />
           </div>
           <div className="form-group">
@@ -70,6 +72,7 @@ const Register: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="register-input"
             />
           </div>
           <div className="form-group">
@@ -79,13 +82,16 @@ const Register: React.FC = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className="register-input"
             />
           </div>
-          <button type="submit">Register</button>
-          <div className="login-link">
-            Already have an account? <a href="/login">Login here</a>
-          </div>
+          <button type="submit" className="register-button">
+            Create Account
+          </button>
         </form>
+        <div className="login-link">
+          Already have an account? <Link to="/login">Login here</Link>
+        </div>
       </div>
     </div>
   );

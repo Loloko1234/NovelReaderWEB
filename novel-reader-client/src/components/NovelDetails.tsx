@@ -11,6 +11,7 @@ const NovelDetails: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoadingChapter, setIsLoadingChapter] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const navigate = useNavigate();
   const [displayedChapters, setDisplayedChapters] = useState<number>(100);
 
@@ -70,6 +71,11 @@ const NovelDetails: React.FC = () => {
     setDisplayedChapters((prev) => prev + 100);
   };
 
+  const truncateDescription = (text: string, maxLength: number = 300) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -105,7 +111,21 @@ const NovelDetails: React.FC = () => {
           <div className="novel-stats">
             <span>Chapters: {novel.last_chapter_number}</span>
           </div>
-          <p className="novel-description">{novel.description}</p>
+          <div className="novel-description-container">
+            <p className="novel-description">
+              {showFullDescription
+                ? novel.description
+                : truncateDescription(novel.description)}
+            </p>
+            {novel.description.length > 300 && (
+              <button
+                className="show-more-button"
+                onClick={() => setShowFullDescription(!showFullDescription)}
+              >
+                {showFullDescription ? "Show Less" : "Show More"}
+              </button>
+            )}
+          </div>
           <div className="action-buttons">
             <button
               onClick={handleStartReading}
