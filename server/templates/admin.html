@@ -82,6 +82,45 @@
         padding: 5px;
         background: #f5f5f5;
       }
+      .edit-novel-section {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 5px;
+      }
+      #currentCover {
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .btn-primary {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background: #0056b3;
+      }
     </style>
   </head>
   <body>
@@ -109,32 +148,47 @@
       <div id="results"></div>
 
       <!-- Add this after the scraper form div -->
-      <div class="edit-form scraper-form">
-        <h2>Edit Novel Cover</h2>
+      <div class="edit-novel-section">
+        <h2>Edit Novel Details</h2>
         <div class="form-group">
           <label for="novelSelect">Select Novel:</label>
           <select id="novelSelect" class="form-control">
             <option value="">Select a novel...</option>
           </select>
         </div>
-        <div class="form-group">
-          <label for="currentCover">Current Cover:</label>
-          <img
-            id="currentCover"
-            src=""
-            alt="No cover"
-            style="max-width: 200px; display: block; margin: 10px 0"
-          />
+
+        <div id="editForm" style="display: none">
+          <div class="form-group">
+            <label>Current Cover:</label>
+            <img
+              id="currentCover"
+              src=""
+              alt="Novel cover"
+              style="max-width: 200px; display: none"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="newCoverUrl">New Cover URL:</label>
+            <input type="text" id="newCoverUrl" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="newAuthor">Author:</label>
+            <input type="text" id="newAuthor" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="newDescription">Description:</label>
+            <textarea
+              id="newDescription"
+              class="form-control"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <button id="updateNovel" class="btn btn-primary">Update Novel</button>
         </div>
-        <div class="form-group">
-          <label for="newCoverUrl">New Cover URL:</label>
-          <input
-            type="url"
-            id="newCoverUrl"
-            placeholder="https://example.com/image.jpg"
-          />
-        </div>
-        <button id="updateCover" class="btn btn-primary">Update Cover</button>
       </div>
     </div>
 
@@ -206,11 +260,12 @@
           const novels = await response.json();
 
           const select = document.getElementById("novelSelect");
+          select.innerHTML = '<option value="">Select a novel...</option>';
+
           novels.forEach((novel) => {
             const option = document.createElement("option");
             option.value = novel.id;
             option.textContent = novel.title;
-            option.dataset.cover = novel.cover_image_url;
             select.appendChild(option);
           });
         } catch (error) {
@@ -218,40 +273,55 @@
         }
       }
 
-      // Update current cover preview when novel is selected
-      document.getElementById("novelSelect").addEventListener("change", (e) => {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        const coverImg = document.getElementById("currentCover");
-        const coverUrl = selectedOption.dataset.cover;
-
-        coverImg.src = coverUrl || "";
-        coverImg.style.display = coverUrl ? "block" : "none";
-
-        // Pre-fill new cover URL input with current URL
-        document.getElementById("newCoverUrl").value = coverUrl || "";
-      });
-
-      // Handle cover update
+      // Load novel details when selected
       document
-        .getElementById("updateCover")
-        .addEventListener("click", async () => {
-          const novelId = document.getElementById("novelSelect").value;
-          const newCoverUrl = document
-            .getElementById("newCoverUrl")
-            .value.trim();
+        .getElementById("novelSelect")
+        .addEventListener("change", async function () {
+          const novelId = this.value;
+          const editForm = document.getElementById("editForm");
 
           if (!novelId) {
-            alert("Please select a novel");
-            return;
-          }
-
-          if (!newCoverUrl) {
-            alert("Please enter a new cover URL");
+            editForm.style.display = "none";
             return;
           }
 
           try {
-            const response = await fetch("/api/update-cover", {
+            const response = await fetch(`/api/novels/${novelId}`);
+            const novel = await response.json();
+
+            // Show the edit form
+            editForm.style.display = "block";
+
+            // Update form fields with current values
+            document.getElementById("currentCover").src =
+              novel.cover_image_url || "";
+            document.getElementById("currentCover").style.display =
+              novel.cover_image_url ? "block" : "none";
+            document.getElementById("newCoverUrl").value =
+              novel.cover_image_url || "";
+            document.getElementById("newAuthor").value = novel.author || "";
+            document.getElementById("newDescription").value =
+              novel.description || "";
+          } catch (error) {
+            console.error("Error loading novel details:", error);
+          }
+        });
+
+      // Handle form submission
+      document
+        .getElementById("updateNovel")
+        .addEventListener("click", async function () {
+          const novelId = document.getElementById("novelSelect").value;
+          const newCoverUrl = document
+            .getElementById("newCoverUrl")
+            .value.trim();
+          const newAuthor = document.getElementById("newAuthor").value.trim();
+          const newDescription = document
+            .getElementById("newDescription")
+            .value.trim();
+
+          try {
+            const response = await fetch("/api/update-novel-details", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -259,33 +329,29 @@
               body: JSON.stringify({
                 novel_id: novelId,
                 cover_url: newCoverUrl,
+                author: newAuthor,
+                description: newDescription,
               }),
             });
 
-            const data = await response.json();
+            const result = await response.json();
 
             if (response.ok) {
-              alert(data.message);
-              // Update the current cover preview and dataset
-              const currentCover = document.getElementById("currentCover");
-              currentCover.src = newCoverUrl;
-              currentCover.style.display = "block";
-
-              const selectedOption =
-                document.getElementById("novelSelect").options[
-                  document.getElementById("novelSelect").selectedIndex
-                ];
-              selectedOption.dataset.cover = newCoverUrl;
+              alert("Novel details updated successfully!");
+              // Update the current cover preview
+              document.getElementById("currentCover").src = newCoverUrl;
+              document.getElementById("currentCover").style.display =
+                newCoverUrl ? "block" : "none";
             } else {
-              alert("Error: " + data.error);
+              alert("Error: " + result.error);
             }
           } catch (error) {
-            alert("Error updating cover: " + error.message);
+            alert("Error updating novel details: " + error.message);
           }
         });
 
       // Load novels when page loads
-      document.addEventListener("DOMContentLoaded", loadNovels);
+      loadNovels();
     </script>
   </body>
 </html>

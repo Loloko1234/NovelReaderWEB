@@ -268,7 +268,81 @@ def update_cover():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Add this endpoint to get all novels for the edit form
+# Add this new endpoint to update novel details (cover, author, and description)
+@app.route('/api/update-novel-details', methods=['POST'])
+@login_required
+def update_novel_details():
+    try:
+        novel_id = request.json.get('novel_id')
+        new_cover_url = request.json.get('cover_url')
+        new_author = request.json.get('author')
+        new_description = request.json.get('description')
+        
+        if not novel_id:
+            return jsonify({'error': 'Novel ID is required'}), 400
+            
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                # Build the update query dynamically based on provided fields
+                update_fields = []
+                params = []
+                
+                if new_cover_url is not None:
+                    update_fields.append("cover_image_url = %s")
+                    params.append(new_cover_url)
+                
+                if new_author is not None:
+                    update_fields.append("author = %s")
+                    params.append(new_author)
+                    
+                if new_description is not None:
+                    update_fields.append("description = %s")
+                    params.append(new_description)
+                
+                if not update_fields:
+                    return jsonify({'error': 'No fields to update'}), 400
+                
+                params.append(novel_id)  # Add novel_id as the last parameter
+                
+                # Construct and execute the update query
+                query = f"""
+                    UPDATE novels 
+                    SET {', '.join(update_fields)}
+                    WHERE id = %s
+                    RETURNING title
+                """
+                
+                cur.execute(query, params)
+                
+                result = cur.fetchone()
+                if result:
+                    # Add log entry
+                    updated_fields = []
+                    if new_cover_url is not None:
+                        updated_fields.append('cover')
+                    if new_author is not None:
+                        updated_fields.append('author')
+                    if new_description is not None:
+                        updated_fields.append('description')
+                    
+                    cur.execute("""
+                        INSERT INTO update_logs (novel_id, result, details)
+                        VALUES (%s, %s, %s)
+                    """, (novel_id, 'success', f'Updated {", ".join(updated_fields)}'))
+                    
+                    conn.commit()
+                    return jsonify({
+                        'message': f'Novel details updated successfully for: {result[0]}',
+                        'novel_id': novel_id,
+                        'updated_fields': updated_fields
+                    })
+                else:
+                    return jsonify({'error': 'Novel not found'}), 404
+                
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Modify the existing get_novels endpoint to include author and description
 @app.route('/api/novels', methods=['GET'])
 @login_required
 def get_novels():
@@ -276,12 +350,34 @@ def get_novels():
         with get_db_connection() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
                 cur.execute("""
-                    SELECT id, title, cover_image_url 
+                    SELECT id, title, cover_image_url, author, description 
                     FROM novels 
                     ORDER BY title
                 """)
                 novels = [dict(row) for row in cur.fetchall()]
                 return jsonify(novels)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Add this new endpoint to get single novel details for editing
+@app.route('/api/novels/<int:novel_id>', methods=['GET'])
+@login_required
+def get_novel_details(novel_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute("""
+                    SELECT id, title, cover_image_url, author, description 
+                    FROM novels 
+                    WHERE id = %s
+                """, (novel_id,))
+                
+                novel = cur.fetchone()
+                if novel:
+                    return jsonify(dict(novel))
+                else:
+                    return jsonify({'error': 'Novel not found'}), 404
+                    
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
