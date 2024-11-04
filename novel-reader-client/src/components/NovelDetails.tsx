@@ -93,7 +93,9 @@ const NovelDetails: React.FC = () => {
           className="novel-cover"
         />
         <div className="novel-info-container">
-          <h1 className="novel-title">{novel.title}</h1>
+          <h1 className="novel-title" data-text={novel.title}>
+            {novel.title}
+          </h1>
           <p className="novel-author">By {novel.author}</p>
           <div className="novel-stats">
             <span>Chapters: {novel.last_chapter_number}</span>

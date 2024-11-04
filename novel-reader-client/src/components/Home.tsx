@@ -88,11 +88,6 @@ const Home: React.FC = () => {
             ))}
           </div>
         </section>
-        <section className="cta">
-          <Link to="/library" className="cta-button">
-            Explore Full Library
-          </Link>
-        </section>
       </main>
       <footer className="home-footer">
         <p>&copy; 2024 Novel Reader. All rights reserved. No capes!</p>

@@ -1,77 +1,78 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Layout.css";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const navigate = useNavigate();
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userId");
-    navigate("/");
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-  };
-
-  const handleLibraryClick = (e: React.MouseEvent) => {
-    if (!isAuthenticated) {
-      e.preventDefault();
-      navigate("/signin");
-    }
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    navigate("/signin");
   };
 
   return (
     <div className="layout">
-      <header className="header">
-        <div className="logo">Novel Reader</div>
-        <nav className={`nav ${isMenuOpen ? "nav-open" : ""}`}>
-          <ul className="nav-list">
-            <li className="nav-item">
-              <Link to="/" className="nav-link">
-                Strona główna
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                to="/library"
-                onClick={handleLibraryClick}
-                className="nav-link"
-              >
-                Biblioteka
-              </Link>
-            </li>
-            <li className="nav-item">
-              {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="nav-button logout-button"
-                >
-                  Wyloguj się
-                </button>
-              ) : (
-                <Link to="/signin" className="nav-button login-button">
-                  Zaloguj się
+      <header className={`header ${isScrolled ? "scrolled" : ""}`}>
+        <div className="header-content">
+          <Link to="/" className="logo">
+            Novel Reader
+          </Link>
+
+          <button
+            className="mobile-menu-button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <span>☰</span>
+          </button>
+
+          <nav>
+            <ul className={`nav-list ${isMenuOpen ? "active" : ""}`}>
+              <li className="nav-item">
+                <Link to="/" className="nav-link">
+                  Home
                 </Link>
-              )}
-            </li>
-          </ul>
-        </nav>
-        <button className="menu-toggle" onClick={toggleMenu}>
-          <span className="menu-icon"></span>
-        </button>
+              </li>
+              <li className="nav-item">
+                <Link to="/library" className="nav-link">
+                  Library
+                </Link>
+              </li>
+              <div className="auth-buttons">
+                {localStorage.getItem("isAuthenticated") ? (
+                  <button
+                    onClick={handleLogout}
+                    className="nav-button login-button"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link to="/signin" className="nav-button login-button">
+                      Login
+                    </Link>
+                    <Link to="/signup" className="nav-button signup-button">
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </ul>
+          </nav>
+        </div>
       </header>
-      <main className="main">{children}</main>
+
+      <main className="main-content">{children}</main>
     </div>
   );
 };
