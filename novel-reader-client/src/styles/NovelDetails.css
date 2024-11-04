@@ -212,15 +212,15 @@
 
 .chapters-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  padding: 0.75rem;
 }
 
 .chapter-item {
   background: rgba(99, 102, 241, 0.1);
-  border-radius: 12px;
-  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
   text-decoration: none;
   transition: all 0.3s ease;
   border: 1px solid rgba(99, 102, 241, 0.2);
@@ -233,17 +233,53 @@
 
 .chapter-number {
   font-family: "Bangers", cursive;
-  font-size: 1.2rem;
+  font-size: 0.8rem;
   color: #6366f1;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .chapter-title {
   color: #e2e8f0;
   font-size: 1rem;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+.load-more-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem auto;
+  padding: 0.75rem 2rem;
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+  border: 2px solid #4f46e5;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.load-more-button:hover {
+  background: rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}
+
+.refresh-icon {
+  transition: transform 0.3s ease;
+}
+
+.load-more-button:hover .refresh-icon {
+  transform: rotate(180deg);
+}
+.chapter-item .chapter-title {
+  font-size: 1.3rem;
+}
 @media (max-width: 1024px) {
   .novel-details-header {
     flex-direction: column;
@@ -272,7 +308,9 @@
   }
 
   .chapters-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+    padding: 0.5rem;
   }
 
   .novel-details-header,
@@ -287,5 +325,18 @@
   .start-reading-button,
   .back-button {
     width: 100%;
+  }
+
+  .load-more-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .chapter-item {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .chapter-title {
+    font-size: 0.9rem;
   }
 }
