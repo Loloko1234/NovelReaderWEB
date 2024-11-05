@@ -61,6 +61,13 @@ check_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 result VARCHAR(50),
 details TEXT
 );
+CREATE TABLE user_library (
+id SERIAL PRIMARY KEY,
+user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+novel_id INTEGER REFERENCES novels(id) ON DELETE CASCADE,
+added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+UNIQUE(user_id, novel_id)
+);
 
 -- Indeksy
 CREATE INDEX idx_novels_last_update ON novels (last_update_check);

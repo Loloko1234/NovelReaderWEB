@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/NovelLibrary.css";
+import axios from "axios";
 
 // Sample data structure for novels
 interface Novel {
@@ -18,33 +19,24 @@ const NovelLibrary: React.FC = () => {
   const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {
-    // Fetch novels from an API or use static data
-    const fetchNovels = async () => {
-      // Replace with actual data fetching
-      const data: Novel[] = [
-        {
-          id: 1,
-          title: "I Became The King by Scavenging",
-          author: "Author A",
-          genre: "Fantasy",
-          publishedYear: 2020,
-          imageUrl: "/solo.jpg", // Path to the image in the public directory
-        },
-        {
-          id: 2,
-          title: "Levelling Up In An Exclusive Dungeon",
-          author: "Author B",
-          genre: "Sci-Fi",
-          publishedYear: 2019,
-          imageUrl: "/solo.jpg", // Use the same or different image
-        },
-        // Add more novels
-      ];
-      setNovels(data);
-      setFilteredNovels(data);
+    const fetchLibrary = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:5000/api/library", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setNovels(response.data);
+        setFilteredNovels(response.data);
+      } catch (error) {
+        console.error("Error fetching library:", error);
+      }
     };
 
-    fetchNovels();
+    if (localStorage.getItem("token")) {
+      fetchLibrary();
+    }
   }, []);
 
   useEffect(() => {

@@ -21,6 +21,7 @@ const NovelDetails: React.FC = () => {
   const navigate = useNavigate();
   const [displayedChapters, setDisplayedChapters] = useState<number>(100);
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
+  const [isInLibrary, setIsInLibrary] = useState(false);
 
   useEffect(() => {
     const loadNovel = async () => {
@@ -64,6 +65,47 @@ const NovelDetails: React.FC = () => {
       fetchUserProgress();
     }
   }, [id]);
+
+  useEffect(() => {
+    const checkLibraryStatus = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:5000/api/library", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const libraryNovels = response.data;
+        setIsInLibrary(libraryNovels.some((n) => n.id === Number(id)));
+      } catch (error) {
+        console.error("Error checking library status:", error);
+      }
+    };
+
+    if (localStorage.getItem("token")) {
+      checkLibraryStatus();
+    }
+  }, [id]);
+
+  const toggleLibrary = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      if (isInLibrary) {
+        await axios.delete(`http://localhost:5000/api/library/${id}`, config);
+      } else {
+        await axios.post(`http://localhost:5000/api/library/${id}`, {}, config);
+      }
+      setIsInLibrary(!isInLibrary);
+    } catch (error) {
+      console.error("Error updating library:", error);
+    }
+  };
 
   const handleStartReading = async () => {
     try {
@@ -160,6 +202,15 @@ const NovelDetails: React.FC = () => {
             )}
           </div>
           <div className="action-buttons">
+            <button
+              onClick={toggleLibrary}
+              className={`library-button ${isInLibrary ? "in-library" : ""}`}
+              aria-label={
+                isInLibrary ? "Remove from Library" : "Add to Library"
+              }
+            >
+              {isInLibrary ? "−" : "+"}
+            </button>
             {userProgress && (
               <div className="reading-status">
                 <div className="progress-info">
