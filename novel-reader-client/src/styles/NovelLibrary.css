@@ -126,6 +126,8 @@
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+  text-decoration: none;
+  display: block;
 }
 
 .novel-card:hover {
@@ -237,6 +239,40 @@
 
   .novel-card:not(:hover) .novel-info {
     transform: translateY(calc(100% - 5rem));
+  }
+
+  .novel-info {
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(15, 23, 42, 0.9) 50%,
+      rgba(15, 23, 42, 0.95) 100%
+    );
+  }
+
+  .novel-chapters {
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 0.5rem;
+  }
+
+  .read-button {
+    opacity: 1;
+    transform: translateY(0);
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+  }
+
+  .novel-card::before {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(15, 23, 42, 0.8) 50%,
+      rgba(15, 23, 42, 0.95) 100%
+    );
   }
 }
 

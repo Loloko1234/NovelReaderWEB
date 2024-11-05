@@ -36,11 +36,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </Link>
 
           <button
-            className="mobile-menu-button"
+            className={`mobile-menu-button ${isMenuOpen ? "active" : ""}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
-            <span>☰</span>
+            <span className="hamburger-icon"></span>
           </button>
 
           <nav>
@@ -77,6 +77,25 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </nav>
         </div>
       </header>
+
+      {isMenuOpen && (
+        <div
+          className="mobile-menu-overlay"
+          onClick={closeMenu}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            zIndex: 999,
+            opacity: isMenuOpen ? 1 : 0,
+            visibility: isMenuOpen ? "visible" : "hidden",
+            transition: "all 0.3s ease",
+          }}
+        />
+      )}
 
       <main className="main-content" onClick={closeMenu}>
         {children}

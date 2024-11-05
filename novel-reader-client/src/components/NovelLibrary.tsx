@@ -149,8 +149,9 @@ const NovelLibrary: React.FC = () => {
         <section className="novel-category">
           <div className="novel-grid">
             {filteredNovels.map((novel) => (
-              <div
+              <Link
                 key={novel.id}
+                to={`/novel/${novel.id}`}
                 className="novel-card"
                 style={{ backgroundImage: `url(${novel.cover_image_url})` }}
               >
@@ -164,22 +165,13 @@ const NovelLibrary: React.FC = () => {
                       </span>
                     )}
                   </p>
-                  <Link
-                    to={
-                      readingProgress[novel.id]
-                        ? `/novel/${novel.id}/chapter/${
-                            readingProgress[novel.id]
-                          }`
-                        : `/novel/${novel.id}/chapter/1`
-                    }
-                    className="read-button"
-                  >
+                  <span className="read-button">
                     {readingProgress[novel.id]
                       ? "Continue Reading"
-                      : "Start Reading"}
-                  </Link>
+                      : "Read Now"}
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
             {filteredNovels.length === 0 && (
               <div className="empty-library">
