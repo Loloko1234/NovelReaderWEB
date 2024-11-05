@@ -71,6 +71,11 @@ const NovelDetails: React.FC = () => {
       setIsLoadingChapter(true);
       setError(null);
 
+      if (userProgress) {
+        navigate(`/novel/${novel.id}/chapter/${userProgress.current_page}`);
+        return;
+      }
+
       const response = await axios.get(
         `http://localhost:5000/api/novels/${novel.id}/chapters/1/content`,
         { timeout: 10000 }
@@ -155,37 +160,27 @@ const NovelDetails: React.FC = () => {
             )}
           </div>
           <div className="action-buttons">
-            <button
-              onClick={handleStartReading}
-              className="start-reading-button"
-            >
-              Start Reading
-            </button>
-            <Link to="/" className="back-button">
+            {userProgress && (
+              <div className="reading-status">
+                <div className="progress-info">
+                  <span className="progress-divider">Last Read: </span>
+                  <span>Chapter {userProgress.current_page}</span>
+                  <span className="progress-divider">Date: </span>
+                  <span>
+                    {new Date(userProgress.last_read_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <button onClick={handleStartReading} className="primary-button">
+                  Resume Reading
+                </button>
+              </div>
+            )}
+            <Link to="/" className="secondary-button">
               Back to Home
             </Link>
           </div>
         </div>
       </div>
-
-      {userProgress && (
-        <div className="reading-progress">
-          <h3>Your Progress</h3>
-          <p>Current Chapter: {userProgress.current_page}</p>
-          <p>
-            Last Read:{" "}
-            {new Date(userProgress.last_read_at).toLocaleDateString()}
-          </p>
-          <button
-            onClick={() =>
-              navigate(`/novel/${id}/chapter/${userProgress.current_page}`)
-            }
-            className="continue-reading-button"
-          >
-            Continue Reading
-          </button>
-        </div>
-      )}
 
       <div className="chapters-section">
         <h2>Chapters</h2>
