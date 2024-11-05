@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/NovelLibrary.css";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner.tsx";
@@ -24,6 +24,7 @@ const NovelLibrary: React.FC = () => {
   const [readingProgress, setReadingProgress] = useState<
     Record<number, number>
   >({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLibraryAndProgress = async () => {
@@ -83,28 +84,18 @@ const NovelLibrary: React.FC = () => {
     setFilteredNovels(updatedNovels);
   }, [filter, sortOrder, novels]);
 
-  const handleReadNow = async (novel: Novel) => {
+  const handleReadClick = async (e: React.MouseEvent, novel: Novel) => {
+    e.preventDefault(); // Prevent the Link component's default navigation
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return `/novel/${novel.id}/chapter/1`;
-
-      const progressResponse = await axios.get(
-        "http://localhost:5000/api/reading-progress",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const novelProgress = progressResponse.data.find(
-        (p: any) => p.novel_id === novel.id
-      );
-
-      if (novelProgress) {
-        return `/novel/${novel.id}/chapter/${novelProgress.current_page}`;
+      if (readingProgress[novel.id]) {
+        // Continue from last read chapter
+        navigate(`/novel/${novel.id}/chapter/${readingProgress[novel.id]}`);
+      } else {
+        // Start from chapter 1
+        navigate(`/novel/${novel.id}/chapter/1`);
       }
-
-      return `/novel/${novel.id}/chapter/1`;
     } catch (error) {
-      console.error("Error fetching reading progress:", error);
-      return `/novel/${novel.id}/chapter/1`;
+      console.error("Error navigating to chapter:", error);
     }
   };
 
@@ -155,6 +146,11 @@ const NovelLibrary: React.FC = () => {
                 className="novel-card"
                 style={{ backgroundImage: `url(${novel.cover_image_url})` }}
               >
+                <div
+                  className="play-button"
+                  aria-label="Read novel"
+                  onClick={(e) => handleReadClick(e, novel)}
+                ></div>
                 <div className="novel-info">
                   <h3 className="novel-title">{novel.title}</h3>
                   <p className="novel-chapters">

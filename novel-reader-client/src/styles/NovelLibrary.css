@@ -282,3 +282,130 @@
   flex-wrap: wrap;
   gap: 0.25rem;
 }
+
+/* Add play button styles */
+.play-button {
+  display: none; /* Hidden by default for desktop */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(99, 102, 241, 0.9);
+  border-radius: 50%;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.play-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 16px;
+  border-color: transparent transparent transparent #ffffff;
+}
+
+/* Add ripple effect */
+.play-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(99, 102, 241, 0.5);
+  animation: ripple 1.5s infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Update mobile styles */
+@media (max-width: 768px) {
+  .play-button {
+    display: block; /* Show play button on mobile */
+    opacity: 0;
+  }
+
+  .novel-card {
+    position: relative;
+  }
+
+  .novel-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .novel-card:active .play-button {
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+
+  .novel-card:active::after {
+    opacity: 1;
+  }
+
+  /* Show play button when touching the card */
+  .novel-card:active .play-button {
+    opacity: 1;
+  }
+
+  /* Always show info on mobile */
+  .novel-info {
+    transform: translateY(0);
+    background: linear-gradient(
+      to top,
+      rgba(15, 23, 42, 0.95) 0%,
+      rgba(15, 23, 42, 0.8) 30%,
+      transparent 100%
+    );
+  }
+
+  .novel-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .novel-chapters {
+    font-size: 0.9rem;
+  }
+
+  /* Adjust card height */
+  .novel-card {
+    height: 250px;
+  }
+}
+
+/* Add touch feedback */
+@media (hover: none) {
+  .novel-card:active {
+    transform: scale(0.98);
+  }
+
+  .play-button {
+    opacity: 1;
+    background: rgba(99, 102, 241, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
