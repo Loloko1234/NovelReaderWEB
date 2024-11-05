@@ -218,7 +218,6 @@
 @media (max-width: 768px) {
   .action-buttons {
     flex-direction: row;
-    flex-wrap: wrap;
     gap: 1rem;
   }
 
@@ -749,4 +748,116 @@
 .library-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+}
+
+/* Update existing media queries and add new breakpoints */
+@media (max-width: 1200px) {
+  .novel-details-header {
+    max-width: 95%;
+    gap: 2rem;
+  }
+
+  .novel-cover {
+    width: 250px;
+    height: 375px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .novel-details-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .novel-info-container {
+    padding: 0;
+  }
+
+  .chapters-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .novel-title {
+    font-size: 2.5rem;
+  }
+
+  .novel-description {
+    font-size: 0.95rem;
+  }
+
+  .chapters-list {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    padding: 0.5rem;
+  }
+
+  .chapter-item {
+    padding: 0.75rem;
+  }
+
+  .chapter-title {
+    font-size: 1.1rem;
+  }
+
+  .reading-progress-card {
+    padding: 1rem;
+  }
+
+  .progress-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .novel-details-header {
+    padding: 1rem;
+  }
+
+  .novel-cover {
+    width: 200px;
+    height: 300px;
+  }
+
+  .novel-title {
+    font-size: 2rem;
+  }
+
+  .chapters-list {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-item {
+    margin: 0.25rem 0;
+  }
+
+  .action-buttons {
+    padding: 0 1rem;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .start-reading-button,
+  .novel-back-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  .library-button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
+
+/* Add smooth transitions for responsive changes */
+.novel-details-header,
+.novel-cover,
+.novel-info-container,
+.chapters-list,
+.chapter-item {
+  transition: all 0.3s ease-in-out;
 }

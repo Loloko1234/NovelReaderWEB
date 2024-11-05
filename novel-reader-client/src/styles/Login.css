@@ -52,7 +52,10 @@
   font-size: 1rem;
   transition: all 0.3s ease;
 }
-
+.nav-button .login-button {
+  text-decoration: none;
+  color: #fff;
+}
 .login-input:focus {
   outline: none;
   border-color: #4f46e5;

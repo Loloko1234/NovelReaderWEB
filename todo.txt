@@ -5,3 +5,6 @@ Improve error handling and validation
 Add password reset functionality
 Implement remember me functionality
 Add OAuth options
+Login zrobiony na mobile
+hamburger menu bardziej w prawo na mobilce 
+I dzialajace kilkanie na chapter bez animacji wysuawania na mobilce po prostu stabilny display 
