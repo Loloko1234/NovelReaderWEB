@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios, { AxiosError, CanceledError } from "axios";
 import "../styles/ChapterReader.css";
 import LoadingSpinner from "./LoadingSpinner.tsx";
+import { updateReadingProgress } from "../api/progress.ts";
 
 const ChapterReader: React.FC = () => {
   const { novelId, chapterNumber } = useParams();
@@ -18,6 +19,7 @@ const ChapterReader: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [chapterTitle, setChapterTitle] = useState<string>("");
+  const [isSavingProgress, setIsSavingProgress] = useState(false);
 
   const currentChapter = Number(chapterNumber);
 
@@ -97,16 +99,40 @@ const ChapterReader: React.FC = () => {
     fetchNovelInfo();
   }, [novelId]);
 
+  const saveReadingProgress = async () => {
+    if (!novelId) return;
+
+    try {
+      setIsSavingProgress(true);
+      await updateReadingProgress(Number(novelId), Number(chapterNumber));
+    } catch (error) {
+      console.error("Error saving reading progress:", error);
+    } finally {
+      setIsSavingProgress(false);
+    }
+  };
+
   const handleScroll = useCallback(() => {
     const scrolled = window.scrollY;
     const total = document.documentElement.scrollHeight - window.innerHeight;
-    setProgress((scrolled / total) * 100);
-  }, []);
+    const newProgress = (scrolled / total) * 100;
+    setProgress(newProgress);
+
+    if ([25, 50, 75, 100].includes(Math.round(newProgress))) {
+      saveReadingProgress();
+    }
+  }, [novelId, chapterNumber]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
+
+  useEffect(() => {
+    return () => {
+      saveReadingProgress();
+    };
+  }, [novelId, chapterNumber]);
 
   const handleNavigateChapter = (direction: "prev" | "next") => {
     if (direction === "prev" && !hasPreviousChapter) return;

@@ -4,6 +4,12 @@ import { fetchNovel, Novel } from "../api/novel.ts";
 import "../styles/NovelDetails.css";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner.tsx";
+import { getUserProgress } from "../api/progress.ts";
+
+interface UserProgress {
+  current_page: number;
+  last_read_at: string;
+}
 
 const NovelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +20,7 @@ const NovelDetails: React.FC = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const navigate = useNavigate();
   const [displayedChapters, setDisplayedChapters] = useState<number>(100);
+  const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
 
   useEffect(() => {
     const loadNovel = async () => {
@@ -35,6 +42,27 @@ const NovelDetails: React.FC = () => {
     };
 
     loadNovel();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchUserProgress = async () => {
+      try {
+        const progress = await getUserProgress();
+        const novelProgress = progress.find((p) => p.novel_id === Number(id));
+        if (novelProgress) {
+          setUserProgress({
+            current_page: novelProgress.current_page,
+            last_read_at: novelProgress.last_read_at,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user progress:", error);
+      }
+    };
+
+    if (localStorage.getItem("token")) {
+      fetchUserProgress();
+    }
   }, [id]);
 
   const handleStartReading = async () => {
@@ -139,6 +167,25 @@ const NovelDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {userProgress && (
+        <div className="reading-progress">
+          <h3>Your Progress</h3>
+          <p>Current Chapter: {userProgress.current_page}</p>
+          <p>
+            Last Read:{" "}
+            {new Date(userProgress.last_read_at).toLocaleDateString()}
+          </p>
+          <button
+            onClick={() =>
+              navigate(`/novel/${id}/chapter/${userProgress.current_page}`)
+            }
+            className="continue-reading-button"
+          >
+            Continue Reading
+          </button>
+        </div>
+      )}
 
       <div className="chapters-section">
         <h2>Chapters</h2>

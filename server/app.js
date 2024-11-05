@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const novelRoutes = require("./src/routes/novelRoutes.js");
 const authRoutes = require("./src/routes/authRoutes.js");
+const progressRoutes = require("./src/routes/progressRoutes.js");
 const { pool } = require("./db");
 
 const app = express();
@@ -74,6 +75,7 @@ app.get("/api/novels/:id", async (req, res) => {
 
 app.use("/api/novel", novelRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", progressRoutes);
 
 app.get(
   "/api/novels/:novelId/chapters/:chapterNumber/content",
