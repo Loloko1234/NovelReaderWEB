@@ -151,6 +151,57 @@ const NovelDetails: React.FC = () => {
     return text.slice(0, maxLength) + "...";
   };
 
+  const renderActionButton = () => {
+    if (isLoadingChapter) {
+      return (
+        <button className="resume-reading-button" disabled>
+          Loading...
+        </button>
+      );
+    }
+
+    if (userProgress) {
+      return (
+        <div className="reading-progress-info">
+          <div className="reading-progress-compact">
+            <div className="progress-title">Your Progress</div>
+            <div className="progress-info">
+              <span className="progress-stat">
+                Current Chapter: {userProgress.current_page}
+              </span>
+              <span className="progress-divider"> • </span>
+              <span className="progress-stat">
+                Last Read:{" "}
+                {userProgress.last_read_at
+                  ? new Date(userProgress.last_read_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )
+                  : "Never"}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={handleStartReading}
+            className="resume-reading-button"
+          >
+            Resume Reading
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <button onClick={handleStartReading} className="resume-reading-button">
+        Start Reading
+      </button>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -211,21 +262,7 @@ const NovelDetails: React.FC = () => {
             >
               {isInLibrary ? "−" : "+"}
             </button>
-            {userProgress && (
-              <div className="reading-status">
-                <div className="progress-info">
-                  <span className="progress-divider">Last Read: </span>
-                  <span>Chapter {userProgress.current_page}</span>
-                  <span className="progress-divider">Date: </span>
-                  <span>
-                    {new Date(userProgress.last_read_at).toLocaleDateString()}
-                  </span>
-                </div>
-                <button onClick={handleStartReading} className="primary-button">
-                  Resume Reading
-                </button>
-              </div>
-            )}
+            {renderActionButton()}
             <Link to="/" className="secondary-button">
               Back to Home
             </Link>

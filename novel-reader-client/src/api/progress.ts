@@ -10,6 +10,16 @@ export interface ReadingProgress {
 
 const API_BASE_URL = "http://localhost:5000/api";
 
+export const getUserProgress = async (): Promise<ReadingProgress[]> => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API_BASE_URL}/progress`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 export const updateReadingProgress = async (
   novelId: number,
   currentPage: number
@@ -24,15 +34,5 @@ export const updateReadingProgress = async (
       },
     }
   );
-  return response.data;
-};
-
-export const getUserProgress = async (): Promise<ReadingProgress[]> => {
-  const token = localStorage.getItem("token");
-  const response = await axios.get(`${API_BASE_URL}/progress`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
   return response.data;
 };

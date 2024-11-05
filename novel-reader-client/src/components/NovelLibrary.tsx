@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../styles/NovelLibrary.css";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner.tsx";
+import { getUserProgress } from "../api/progress.ts";
 
 interface Novel {
   id: number;
@@ -10,6 +11,7 @@ interface Novel {
   author: string;
   cover_image_url: string;
   last_chapter_number: number;
+  current_page?: number;
 }
 
 const NovelLibrary: React.FC = () => {
@@ -19,18 +21,37 @@ const NovelLibrary: React.FC = () => {
   const [filter, setFilter] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [readingProgress, setReadingProgress] = useState<
+    Record<number, number>
+  >({});
 
   useEffect(() => {
-    const fetchLibrary = async () => {
+    const fetchLibraryAndProgress = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/library", {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        const [libraryResponse, progressData] = await Promise.all([
+          axios.get("http://localhost:5000/api/library", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          getUserProgress(),
+        ]);
+
+        const progressMap = progressData.reduce(
+          (acc: Record<number, number>, curr: any) => {
+            acc[curr.novel_id] = curr.current_page;
+            return acc;
           },
-        });
-        setNovels(response.data);
-        setFilteredNovels(response.data);
+          {}
+        );
+
+        setReadingProgress(progressMap);
+        setNovels(libraryResponse.data);
+        setFilteredNovels(libraryResponse.data);
         setError(null);
       } catch (error) {
         console.error("Error fetching library:", error);
@@ -40,9 +61,7 @@ const NovelLibrary: React.FC = () => {
       }
     };
 
-    if (localStorage.getItem("token")) {
-      fetchLibrary();
-    }
+    fetchLibraryAndProgress();
   }, []);
 
   useEffect(() => {
@@ -64,6 +83,31 @@ const NovelLibrary: React.FC = () => {
     setFilteredNovels(updatedNovels);
   }, [filter, sortOrder, novels]);
 
+  const handleReadNow = async (novel: Novel) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return `/novel/${novel.id}/chapter/1`;
+
+      const progressResponse = await axios.get(
+        "http://localhost:5000/api/reading-progress",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const novelProgress = progressResponse.data.find(
+        (p: any) => p.novel_id === novel.id
+      );
+
+      if (novelProgress) {
+        return `/novel/${novel.id}/chapter/${novelProgress.current_page}`;
+      }
+
+      return `/novel/${novel.id}/chapter/1`;
+    } catch (error) {
+      console.error("Error fetching reading progress:", error);
+      return `/novel/${novel.id}/chapter/1`;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -82,22 +126,22 @@ const NovelLibrary: React.FC = () => {
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1 className="comic-title">Epic Novel Collection</h1>
+        <h1 className="comic-title">My Novel Collection</h1>
         <div className="library-controls">
           <div className="search-wrapper">
             <input
               type="text"
-              placeholder="Search for epic tales"
+              className="library-search"
+              placeholder="Search for novels..."
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="library-search"
             />
           </div>
           <button
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
             className="sort-button"
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
           >
-            {sortOrder === "asc" ? "Sort Z-A" : "Sort A-Z"}
+            Sort {sortOrder === "asc" ? "Z-A" : "A-Z"}
           </button>
         </div>
       </header>
@@ -114,9 +158,25 @@ const NovelLibrary: React.FC = () => {
                   <h3 className="novel-title">{novel.title}</h3>
                   <p className="novel-chapters">
                     Chapters: {novel.last_chapter_number}
+                    {readingProgress[novel.id] && (
+                      <span className="current-progress">
+                        • Current: Ch.{readingProgress[novel.id]}
+                      </span>
+                    )}
                   </p>
-                  <Link to={`/novel/${novel.id}`} className="read-button">
-                    Read Now
+                  <Link
+                    to={
+                      readingProgress[novel.id]
+                        ? `/novel/${novel.id}/chapter/${
+                            readingProgress[novel.id]
+                          }`
+                        : `/novel/${novel.id}/chapter/1`
+                    }
+                    className="read-button"
+                  >
+                    {readingProgress[novel.id]
+                      ? "Continue Reading"
+                      : "Start Reading"}
                   </Link>
                 </div>
               </div>

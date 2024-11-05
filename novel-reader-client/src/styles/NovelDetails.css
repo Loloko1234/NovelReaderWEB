@@ -185,8 +185,46 @@
 
 .action-buttons {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
   margin-top: 2rem;
+}
+
+.library-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+}
+
+.library-button.in-library {
+  background: #ef4444;
+}
+
+.library-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
+}
+
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .library-button {
+    order: -1;
+  }
 }
 
 .reading-status {
