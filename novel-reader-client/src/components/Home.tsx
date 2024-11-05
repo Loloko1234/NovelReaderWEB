@@ -63,8 +63,9 @@ const Home: React.FC = () => {
           <h2 className="category-title">Featured Novels</h2>
           <div className="novel-grid">
             {novels.map((novel) => (
-              <div
+              <Link
                 key={novel.id}
+                to={`/novel/${novel.id}`}
                 className="novel-card"
                 style={{ backgroundImage: `url(${novel.cover_image_url})` }}
               >
@@ -73,11 +74,9 @@ const Home: React.FC = () => {
                   <p className="novel-chapters">
                     Chapters: {novel.last_chapter_number}
                   </p>
-                  <Link to={`/novel/${novel.id}`} className="read-button">
-                    Read Now
-                  </Link>
+                  <span className="read-button">Read Now</span>
                 </div>
-              </div>
+              </Link>
             ))}
             {[...Array(Math.max(0, 4 - novels.length))].map((_, index) => (
               <div key={`empty-${index}`} className="novel-card empty-card">

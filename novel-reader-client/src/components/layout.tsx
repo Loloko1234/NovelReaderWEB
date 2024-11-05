@@ -7,6 +7,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -19,6 +23,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    closeMenu();
     navigate("/login");
   };
 
@@ -26,13 +31,14 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="layout">
       <header className={`header ${isScrolled ? "scrolled" : ""}`}>
         <div className="header-content">
-          <Link to="/" className="logo">
+          <Link to="/" className="logo" onClick={closeMenu}>
             Novel Reader
           </Link>
 
           <button
             className="mobile-menu-button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             <span>☰</span>
           </button>
@@ -40,12 +46,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <nav>
             <ul className={`nav-list ${isMenuOpen ? "active" : ""}`}>
               <li className="nav-item">
-                <Link to="/" className="nav-link">
+                <Link to="/" className="nav-link" onClick={closeMenu}>
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/library" className="nav-link">
+                <Link to="/library" className="nav-link" onClick={closeMenu}>
                   Library
                 </Link>
               </li>
@@ -58,7 +64,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     Logout
                   </button>
                 ) : (
-                  <Link to="/login" className="nav-button login-button">
+                  <Link
+                    to="/login"
+                    className="nav-button login-button"
+                    onClick={closeMenu}
+                  >
                     Login
                   </Link>
                 )}
@@ -68,7 +78,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </div>
       </header>
 
-      <main className="main-content">{children}</main>
+      <main className="main-content" onClick={closeMenu}>
+        {children}
+      </main>
     </div>
   );
 };

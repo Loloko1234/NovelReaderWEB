@@ -43,7 +43,7 @@
 }
 
 .login-input {
-  width: 100%;
+  width: 91%;
   padding: 1rem;
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -62,7 +62,20 @@
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
-
+.login-button-idk {
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  background: transparent;
+  color: #fff;
+  border: 2px solid #4f46e5;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
 .login-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
@@ -119,17 +132,55 @@
   text-decoration: underline;
 }
 
-/* Add responsive design */
+/* Update media queries for better responsiveness */
 @media (max-width: 480px) {
   .login-card {
-    padding: 2rem;
+    padding: 1.5rem;
+    max-width: 90%;
   }
 
   .login-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .login-input {
-    padding: 0.875rem;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    width: 90%;
+  }
+
+  .login-button-idk {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .register-link {
+    font-size: 0.8rem;
+    margin-top: 1rem;
+  }
+}
+
+/* Add tablet breakpoint */
+@media (min-width: 481px) and (max-width: 768px) {
+  .login-card {
+    max-width: 80%;
+    padding: 2rem;
+  }
+
+  .login-input {
+    width: 93%;
+  }
+}
+
+/* Add landscape orientation handling */
+@media (max-height: 600px) and (orientation: landscape) {
+  .login-container {
+    padding: 10px;
+    min-height: 120vh;
+  }
+
+  .login-card {
+    margin: 2rem 0;
   }
 }

@@ -55,7 +55,7 @@ const Login: React.FC = () => {
               className="login-input"
             />
           </div>
-          <button type="submit" className="login-button">
+          <button type="submit" className="login-button-idk">
             Login
           </button>
         </form>
