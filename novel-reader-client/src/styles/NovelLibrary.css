@@ -108,26 +108,24 @@
   box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
 }
 
-.novel-grid {
+.novel-grid1 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 1440px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, 180px) !important;
+  gap: 20px;
+  padding: 20px;
+  justify-content: start;
 }
 
 .novel-card {
-  aspect-ratio: 2/3;
-  border-radius: 15px;
+  position: relative;
+  width: 180px;
+  border-radius: 12px;
+  overflow: hidden;
   background-size: cover;
   background-position: center;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
-  text-decoration: none;
-  display: block;
+  cursor: pointer;
 }
 
 .novel-card:hover {
@@ -140,15 +138,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   background: linear-gradient(
     to top,
     rgba(15, 23, 42, 0.95) 0%,
     rgba(15, 23, 42, 0.8) 50%,
     transparent 100%
   );
-  transform: translateY(0);
-  transition: all 0.4s ease;
 }
 
 .novel-card:not(:hover) .novel-info {
@@ -178,18 +174,25 @@
 
 .read-button {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
+  margin-top: 0.5rem;
   background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
   color: white;
-  text-decoration: none;
+  border: none;
   border-radius: 25px;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .read-button:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.read-button:active {
+  transform: translateY(0);
 }
 
 .current-progress {
@@ -223,12 +226,13 @@
   }
 
   .novel-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, 140px);
+    gap: 15px;
+    padding: 15px;
   }
 
   .novel-card {
-    height: 300px;
+    width: 140px;
   }
 
   .novel-title {
@@ -261,8 +265,8 @@
   .read-button {
     opacity: 1;
     transform: translateY(0);
-    padding: 0.4rem 1rem;
-    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
     margin-top: 0.25rem;
   }
 
@@ -408,4 +412,14 @@
     background: rgba(99, 102, 241, 0.9);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
+}
+
+.home-main {
+  padding: 0;
+  margin: 0;
+}
+
+.novel-category {
+  padding: 0;
+  margin: 0;
 }

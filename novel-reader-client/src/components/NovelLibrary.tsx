@@ -84,16 +84,15 @@ const NovelLibrary: React.FC = () => {
     setFilteredNovels(updatedNovels);
   }, [filter, sortOrder, novels]);
 
-  const handleReadClick = async (e: React.MouseEvent, novel: Novel) => {
+  const handleReadClick = (e: React.MouseEvent, novel: Novel) => {
     e.preventDefault(); // Prevent the Link component's default navigation
+    navigateToReading(novel);
+  };
+
+  const navigateToReading = (novel: Novel) => {
     try {
-      if (readingProgress[novel.id]) {
-        // Continue from last read chapter
-        navigate(`/novel/${novel.id}/chapter/${readingProgress[novel.id]}`);
-      } else {
-        // Start from chapter 1
-        navigate(`/novel/${novel.id}/chapter/1`);
-      }
+      const startingChapter = readingProgress[novel.id] || 1;
+      navigate(`/novel/${novel.id}/chapter/${startingChapter}`);
     } catch (error) {
       console.error("Error navigating to chapter:", error);
     }
@@ -138,11 +137,10 @@ const NovelLibrary: React.FC = () => {
       </header>
       <main className="home-main">
         <section className="novel-category">
-          <div className="novel-grid">
+          <div className="novel-grid1 novel-grid">
             {filteredNovels.map((novel) => (
-              <Link
+              <div
                 key={novel.id}
-                to={`/novel/${novel.id}`}
                 className="novel-card"
                 style={{ backgroundImage: `url(${novel.cover_image_url})` }}
               >
@@ -161,13 +159,16 @@ const NovelLibrary: React.FC = () => {
                       </span>
                     )}
                   </p>
-                  <span className="read-button">
+                  <button
+                    className="read-button"
+                    onClick={(e) => handleReadClick(e, novel)}
+                  >
                     {readingProgress[novel.id]
                       ? "Continue Reading"
                       : "Read Now"}
-                  </span>
+                  </button>
                 </div>
-              </Link>
+              </div>
             ))}
             {filteredNovels.length === 0 && (
               <div className="empty-library">

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { users } from "../../data/users.ts";
 import "../../styles/SignIn.css";
 
 const SignIn: React.FC = () => {
