@@ -84,12 +84,12 @@ const NovelLibrary: React.FC = () => {
     setFilteredNovels(updatedNovels);
   }, [filter, sortOrder, novels]);
 
-  const handleReadClick = (e: React.MouseEvent, novel: Novel) => {
-    e.preventDefault(); // Prevent the Link component's default navigation
-    navigateToReading(novel);
+  const handleCardClick = (novel: Novel) => {
+    navigate(`/novel/${novel.id}`);
   };
 
-  const navigateToReading = (novel: Novel) => {
+  const handleReadClick = (e: React.MouseEvent, novel: Novel) => {
+    e.stopPropagation(); // Prevent the card click event from firing
     try {
       const startingChapter = readingProgress[novel.id] || 1;
       navigate(`/novel/${novel.id}/chapter/${startingChapter}`);
@@ -143,6 +143,7 @@ const NovelLibrary: React.FC = () => {
                 key={novel.id}
                 className="novel-card"
                 style={{ backgroundImage: `url(${novel.cover_image_url})` }}
+                onClick={() => handleCardClick(novel)}
               >
                 <div
                   className="play-button"
